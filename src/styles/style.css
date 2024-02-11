@@ -1,0 +1,56 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+html {
+  scroll-behavior: smooth;
+  width: 100%;
+  max-width: 100%;
+  color: "white";
+}
+
+body {
+  background-color: black;
+  width: 100vw;
+  height: 100vh;
+}
+
+nav {
+  z-index: 999;
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+.right-0 {
+  right: 0 !important;
+}
+
+.font-size-2rem {
+  font-size: 2rem !important;
+}
+
+.font-size-3rem {
+  font-size: 3rem !important;
+}
+
+.material-symbols-outlined {
+  color: white;
+  font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24;
+}
+
+#game-window {
+  background-color: rgb(93, 95, 95);
+  margin: auto;
+  transition: all 0.5s;
+  overflow: hidden;
+}
+
+#player {
+  position: absolute;
+  width: 87px;
+  height: 82px;
+  background-image: url("/img/player/stand1.png");
+  background-repeat: no-repeat;
+  background-position-y: bottom;
+  image-rendering: pixelated;
+  transform: scaleX(1);
+}/*# sourceMappingURL=style.css.map */
