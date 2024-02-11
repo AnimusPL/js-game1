@@ -5,35 +5,37 @@ const Game = {
         right: false,
         up: false,
         down: false,
+        A: false,
+        S: false,
+        D: false,
+        Z: false,
+        X: false,
+        C: false,
         activeObject: {},
         events() {
             $('body').keydown(function(event) {
-                if (event.which === 37) {
-                    Game.Keys.left = true;
-                }
-                if (event.which === 38) {
-                    Game.Keys.up = true;
-                }
-                if (event.which === 39) {
-                    Game.Keys.right = true;
-                }
-                if (event.which === 40) {
-                    Game.Keys.down = true;
-                }
+                if (event.which === 37) Game.Keys.left = true;
+                if (event.which === 38) Game.Keys.up = true;
+                if (event.which === 39) Game.Keys.right = true;
+                if (event.which === 40) Game.Keys.down = true;
+                if (event.which === 65) Game.Keys.A = true;
+                if (event.which === 83) Game.Keys.S = true;
+                if (event.which === 68) Game.Keys.D = true;
+                if (event.which === 90) Game.Keys.Z = true;
+                if (event.which === 88) Game.Keys.X = true;
+                if (event.which === 67) Game.Keys.C = true;
             });
             $('body').keyup(function(event) {
-                if (event.which === 37) { //
-                    Game.Keys.left = false;
-                }
-                if (event.which === 38) { //
-                    Game.Keys.up = false;
-                }
-                if (event.which === 39) { //
-                    Game.Keys.right = false;
-                }
-                if (event.which === 40) { //
-                    Game.Keys.down = false;
-                }
+                if (event.which === 37) Game.Keys.left = false;
+                if (event.which === 38) Game.Keys.up = false;
+                if (event.which === 39) Game.Keys.right = false;
+                if (event.which === 40) Game.Keys.down = false;
+                if (event.which === 65) Game.Keys.A = false;
+                if (event.which === 83) Game.Keys.S = false;
+                if (event.which === 68) Game.Keys.D = false;
+                if (event.which === 90) Game.Keys.Z = false;
+                if (event.which === 88) Game.Keys.X = false;
+                if (event.which === 67) Game.Keys.C = false;
             });
         },
     },
@@ -45,6 +47,8 @@ const Game = {
         jumpPower: 10,
         friction: 0.5,
         grounded: true,
+        crouched: false,
+        guarded: false,
         position: {
             x: 20,
             y: 0
@@ -64,12 +68,88 @@ const Game = {
                 counter: 0,
                 animationSpeed: 0.1,
                 start() {
-                    if (Game.Player.grounded && !Game.Keys.right && !Game.Keys.left) {
+                    if (Game.Player.grounded && !Game.Player.crouched && !Game.Keys.right && !Game.Keys.left) {
                         Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
                         // Zmieniamy inkrementację o prędkość animacji
                         this.counter += this.animationSpeed;
                         // Sprawdzamy, czy przekroczyliśmy ilość klatek animacji
                         if (this.counter >= this.sprites.length) this.counter = 0;
+                    }
+                }
+            },
+            crouch: {
+                sprites: [
+                    'img/player/crouch1.png', 
+                    'img/player/crouch2.png', 
+                    'img/player/crouch3.png', 
+                ],
+                counter: 0,
+                animationSpeed: 0.3,
+                start() {
+                    if (Game.Player.grounded) {
+                        if (!Game.Player.crouched && Game.Keys.down) {
+                            Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
+                            if (this.counter < 1) {
+                                this.counter += this.animationSpeed;
+                            }
+                            else if (this.counter >= 1) {
+                                Game.Player.crouched = true;
+                            }
+                        }
+                        
+                        if (Game.Player.crouched && Game.Keys.down) {
+                            this.counter = 1;
+                            Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
+                        }
+                        
+                        else if (Game.Player.crouched && !Game.Keys.down) {
+                            if (this.counter <= 3) {
+                                Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
+                                this.counter += this.animationSpeed;
+                            }
+                            else {
+                                this.counter = 0;
+                                Game.Player.crouched = false;
+                            }
+                        }
+                    }
+                }
+            },
+            guard: {
+                sprites: [
+                    'img/player/guard1.png', 
+                    'img/player/guard2.png', 
+                    'img/player/guard3.png', 
+                ],
+                counter: 0,
+                animationSpeed: 0.3,
+                start() {
+                    if (Game.Player.grounded) {
+                        if (!Game.Player.guarded && Game.Keys.D) {
+                            Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
+                            if (this.counter < 1) {
+                                this.counter += this.animationSpeed;
+                            }
+                            else if (this.counter >= 1) {
+                                Game.Player.guarded = true;
+                            }
+                        }
+                        
+                        if (Game.Player.guarded && Game.Keys.D) {
+                            this.counter = 1;
+                            Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
+                        }
+                        
+                        else if (Game.Player.guarded && !Game.Keys.D) {
+                            if (this.counter <= 3) {
+                                Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
+                                this.counter += this.animationSpeed;
+                            }
+                            else {
+                                this.counter = 0;
+                                Game.Player.guarded = false;
+                            }
+                        }
                     }
                 }
             },
@@ -87,15 +167,15 @@ const Game = {
                 counter: 0,
                 animationSpeed: 0.2,
                 start() {
-                    if (Game.Player.grounded && Game.Keys.right) {
-                        Game.Player.element.css('transform', 'scaleX(1)')
+                    if (Game.Player.grounded && !Game.Player.crouched && Game.Keys.right) {
+                        //Game.Player.element.css('transform', 'scaleX(1)')
                         Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
                         this.counter += this.animationSpeed;
                         // Sprawdzamy, czy przekroczyliśmy ilość klatek animacji
                         if (this.counter >= this.sprites.length) this.counter = 0;
                     }
-                    else if (Game.Player.grounded && Game.Keys.left) {
-                        Game.Player.element.css('transform', 'scaleX(-1)')
+                    else if (Game.Player.grounded && !Game.Player.crouched && Game.Keys.left) {
+                        //Game.Player.element.css('transform', 'scaleX(-1)')
                         Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
                         this.counter += this.animationSpeed;
                         // Sprawdzamy, czy przekroczyliśmy ilość klatek animacji
@@ -113,8 +193,6 @@ const Game = {
                 counter: 0,
                 animationSpeed: 0.2,
                 start() {
-
-
                     if (!Game.Player.grounded && Game.Player.vectors.y > 0) {
                         Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
 
@@ -131,7 +209,6 @@ const Game = {
                     }
                     else if (!Game.Player.grounded && Game.Player.vectors.y < 0) {
                         Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(3)]})`);
-
                     }
                 }
             },
@@ -139,6 +216,8 @@ const Game = {
             animate() {
                 this.idle.start();
                 this.run.start();
+                this.crouch.start();
+                this.guard.start();
                 this.jump.start();
             },
             //załaduj obrazy przed startem animacji
@@ -170,17 +249,20 @@ const Game = {
             this.element.css('left', `${this.position.x}px`);
             this.element.css('bottom', `${this.position.y}px`);
 
-            if (Game.Keys.activeObject == 'player' && Game.Keys.left && (this.vectors.x > -this.maxSpeed)) {
-                this.vectors.x -= this.speed;
+            if ((!Game.Player.crouched && !Game.Keys.down) && (!Game.Player.guarded)) {
+                if (Game.Keys.activeObject == 'player' && Game.Keys.left && (this.vectors.x > -this.maxSpeed)) {
+                    Game.Player.element.css('transform', 'scaleX(-1)')
+                    this.vectors.x -= this.speed;
+                }
+                else if (Game.Keys.activeObject == 'player' && Game.Keys.right && (this.vectors.x < this.maxSpeed)) {
+                    Game.Player.element.css('transform', 'scaleX(1)')
+                    this.vectors.x += this.speed;
+                }
+                if (Game.Keys.activeObject == 'player' && Game.Keys.up && Game.Player.grounded) {
+                    Game.Player.grounded = false
+                    this.vectors.y += this.jumpPower;
+                }
             }
-            else if (Game.Keys.activeObject == 'player' && Game.Keys.right && (this.vectors.x < this.maxSpeed)) {
-                this.vectors.x += this.speed;
-            }
-            if (Game.Keys.activeObject == 'player' && Game.Keys.up && Game.Player.grounded) {
-                Game.Player.grounded = false
-                this.vectors.y += this.jumpPower;
-            }
-
             /* uwzględnij tarcie zmniejszające wektor ruchu*/
             if (this.vectors.x > 0) {
                 this.vectors.x -= this.friction;
