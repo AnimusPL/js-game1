@@ -56,10 +56,10 @@ const Game = {
         animations: {
             idle: {
                 sprites: [
-                    '/img/player/stand1.png', 
-                    '/img/player/stand2.png', 
-                    '/img/player/stand3.png', 
-                    '/img/player/stand4.png'
+                    'img/player/stand1.png', 
+                    'img/player/stand2.png', 
+                    'img/player/stand3.png', 
+                    'img/player/stand4.png'
                 ],
                 counter: 0,
                 animationSpeed: 0.1,
@@ -75,14 +75,14 @@ const Game = {
             },
             run: {
                 sprites: [
-                    '/img/player/run1.png', 
-                    '/img/player/run2.png', 
-                    '/img/player/run3.png', 
-                    '/img/player/run4.png',
-                    '/img/player/run5.png', 
-                    '/img/player/run6.png', 
-                    '/img/player/run7.png', 
-                    '/img/player/run8.png'
+                    'img/player/run1.png', 
+                    'img/player/run2.png', 
+                    'img/player/run3.png', 
+                    'img/player/run4.png',
+                    'img/player/run5.png', 
+                    'img/player/run6.png', 
+                    'img/player/run7.png', 
+                    'img/player/run8.png'
                 ],
                 counter: 0,
                 animationSpeed: 0.2,
@@ -105,10 +105,10 @@ const Game = {
             },
             jump: {
                 sprites: [
-                    '/img/player/jump1.png', 
-                    '/img/player/jump2.png', 
-                    '/img/player/jump3.png', 
-                    '/img/player/jump4.png',
+                    'img/player/jump1.png', 
+                    'img/player/jump2.png', 
+                    'img/player/jump3.png', 
+                    'img/player/jump4.png',
                 ],
                 counter: 0,
                 animationSpeed: 0.2,
