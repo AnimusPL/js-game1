@@ -48,16 +48,34 @@ nav {
     margin: auto;
     transition: all 0.5s;
     overflow: hidden;
+    box-shadow: black 0px 0px 25px;
 }
 
+
 #player {
+    //filter: drop-shadow(rgb(0, 238, 255) 0px 0px 4px);
+    display: flex;
+    flex-wrap: wrap-reverse;
+    justify-content: center;
+    align-items: center;
     position: absolute;
     width: 87px;
     height: 82px;
-    background-image: none;
     background-repeat: no-repeat;
     background-position-y: bottom;
+    background-position-x: center;
     image-rendering: pixelated;
     transform: scaleX(1);
+}
+#aura {
+    margin: auto;
+    scale: 1.2;
+    filter: blur(2px);
+    width: 107px;
+    height: 116px;
+    background-repeat: no-repeat;
+    background-position-y: bottom;
+    background-position-x: center;
+    image-rendering: pixelated;
 }
 

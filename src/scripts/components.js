@@ -41,6 +41,7 @@ const Game = {
     },
     Player: {
         element: {},
+        aura: {},
         loaded: false,
         speed: 1,
         maxSpeed: 5,
@@ -56,6 +57,27 @@ const Game = {
         vectors: {
             x: 0,
             y: 0,
+        },
+        fx: {
+            whiteAura: {
+                sprites: [
+                    'img/fx/aura1.png',
+                    'img/fx/aura2.png',
+                    'img/fx/aura3.png',
+                    'img/fx/aura4.png'
+                ],
+                counter: 0,
+                animationSpeed: 0.15,
+                loop() {
+                    Game.Player.aura.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
+                    this.counter += this.animationSpeed;
+                    if (this.counter >= this.sprites.length) this.counter = 0;
+                },
+                stop() {
+                    Game.Player.aura.css('background-image', 'none');
+                    this.counter = 0;
+                }
+            }
         },
         animations: {
             idle: {
@@ -153,6 +175,16 @@ const Game = {
                     }
                 }
             },
+            powerUp: {
+                start() {
+                    if (Game.Keys.C && Game.Player.grounded && !Game.Player.crouched && !Game.Player.guarded) {
+                        Game.Player.fx.whiteAura.loop();
+                    }
+                    else {
+                        Game.Player.fx.whiteAura.stop();
+                    }
+                }
+            },
             run: {
                 sprites: [
                     'img/player/run1.png', 
@@ -165,7 +197,7 @@ const Game = {
                     'img/player/run8.png'
                 ],
                 counter: 0,
-                animationSpeed: 0.2,
+                animationSpeed: 0.25,
                 start() {
                     if (Game.Player.grounded && !Game.Player.crouched && Game.Keys.right) {
                         //Game.Player.element.css('transform', 'scaleX(1)')
@@ -218,6 +250,7 @@ const Game = {
                 this.run.start();
                 this.crouch.start();
                 this.guard.start();
+                this.powerUp.start();
                 this.jump.start();
             },
             //załaduj obrazy przed startem animacji
@@ -241,6 +274,7 @@ const Game = {
         init() {
             Game.Keys.activeObject = 'player';
             this.element = $('#player');
+            this.aura = $('#aura');
             this.element.css('left', `${this.position.x}px`);
             this.element.css('bottom', `${this.position.y}px`);
             this.loaded = true;
