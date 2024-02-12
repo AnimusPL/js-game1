@@ -51,6 +51,25 @@ nav {
     box-shadow: black 0px 0px 25px;
 }
 
+#ui {
+    position: absolute;
+    width: 30%;
+    height: 20px;
+    border: 1px solid black;
+    margin: 3%;
+}
+
+#hp {
+    width: 0%;
+    height: 50%;
+    background-color: red;
+}
+
+#power {
+    width: 0%;
+    height: 50%;
+    background-color: blue;
+}
 
 #player {
     //filter: drop-shadow(rgb(0, 238, 255) 0px 0px 4px);
@@ -70,7 +89,7 @@ nav {
 #aura {
     margin: auto;
     scale: 1.2;
-    filter: blur(2px);
+    filter: drop-shadow(rgb(0, 238, 255) 0px 0px 5px);
     width: 107px;
     height: 116px;
     background-repeat: no-repeat;
