@@ -64,77 +64,38 @@ const Game = {
         },
         fx: {
             whiteAura: {
-                sprites: [
-                    'img/fx/aura1.png',
-                    'img/fx/aura2.png',
-                    'img/fx/aura3.png',
-                    'img/fx/aura4.png'
-                ],
-                counter: 0,
-                animationSpeed: 0.15,
                 loop() {
-                    Game.Player.aura.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
-                    this.counter += this.animationSpeed;
-                    if (this.counter >= this.sprites.length) this.counter = 0;
+                    $('#aura').addClass('animation-aura-white');
                 },
                 stop() {
-                    Game.Player.aura.css('background-image', 'none');
-                    this.counter = 0;
+                    $('#aura').removeClass('animation-aura-white');
                 }
             }
         },
         animations: {
             idle: {
-                sprites: [
-                    'img/player/stand1.png', 
-                    'img/player/stand2.png', 
-                    'img/player/stand3.png', 
-                    'img/player/stand4.png'
-                ],
+
                 counter: 0,
                 animationSpeed: 0.1,
                 start() {
                     if (Game.Player.grounded && !Game.Player.crouched && !Game.Keys.right && !Game.Keys.left) {
-                        Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
-                        // Zmieniamy inkrementację o prędkość animacji
-                        this.counter += this.animationSpeed;
-                        // Sprawdzamy, czy przekroczyliśmy ilość klatek animacji
-                        if (this.counter >= this.sprites.length) this.counter = 0;
+                        Game.Player.element.css('animation', '0.5s linear infinite animation-player-idle')
                     }
                 }
             },
             crouch: {
-                sprites: [
-                    'img/player/crouch1.png', 
-                    'img/player/crouch2.png', 
-                    'img/player/crouch3.png', 
-                ],
-                counter: 0,
-                animationSpeed: 0.3,
                 start() {
                     if (Game.Player.grounded) {
                         if (!Game.Player.crouched && Game.Keys.down) {
-                            Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
-                            if (this.counter < 1) {
-                                this.counter += this.animationSpeed;
-                            }
-                            else if (this.counter >= 1) {
+                            Game.Player.element.css('animation', '0.2s linear animation-player-crouch-down');
+                            if (Game.Player.element.css('background-image').includes('img/player/crouch2.png')) {
+                                Helpers.stopAnimationOnLastFrame(Game.Player.element);
                                 Game.Player.crouched = true;
                             }
                         }
-                        
-                        if (Game.Player.crouched && Game.Keys.down) {
-                            this.counter = 1;
-                            Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
-                        }
-                        
-                        else if (Game.Player.crouched) {
-                            if (this.counter <= 3) {
-                                Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
-                                this.counter += this.animationSpeed;
-                            }
-                            else {
-                                this.counter = 0;
+                        else if (Game.Player.crouched && !Game.Keys.down) {
+                            Game.Player.element.css('animation', '0.2s linear animation-player-crouch-up');
+                            if (Game.Player.element.css('background-image').includes('img/player/crouch3.png?2')) {
                                 Game.Player.crouched = false;
                             }
                         }
@@ -308,21 +269,6 @@ const Game = {
                 this.powerUp.start();
                 this.jump.start();
             },
-            //załaduj obrazy przed startem animacji
-            preload() {
-                this.idle.sprites.forEach(url => {
-                    const img = new Image();
-                    img.src = url;
-                });
-                this.run.sprites.forEach(url => {
-                    const img = new Image();
-                    img.src = url;
-                });
-                this.jump.sprites.forEach(url => {
-                    const img = new Image();
-                    img.src = url;
-                });
-            }
         },
         
         
@@ -437,7 +383,6 @@ const Game = {
             }
         },
         init() {
-            Game.Player.animations.preload();
             Game.Keys.events();
             this.element = $('#game-window');
             this.element.css('width', `${this.width}px`)
@@ -456,3 +401,12 @@ const Game = {
         requestAnimationFrame(Game.loop.bind(this));
     }
 };
+
+const Helpers = {
+    stopAnimationOnLastFrame(element) {
+        element.css('animation-fill-mode', 'forwards');
+    },
+    startAnimationOnLastFrame(element) {
+        element.css('animation-fill-mode', 'none');
+    }
+}
