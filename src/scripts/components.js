@@ -102,31 +102,11 @@ const Game = {
                     }
                 }
             },
-            guard: {
-                start() {
-                    if (!Game.Player.guarded && Game.Keys.D) {
-                        Game.Player.element.css('animation', '0.1s linear animation-player-guard-down');
-                        if (Game.Player.element.css('background-image').includes('img/player/guard2.png')) {
-                            Game.Player.guarded = true;
-                            Game.Player.crouched = false;
-                            Helpers.stopAnimationOnLastFrame(Game.Player.element);
-                        }
-                    }
-                    else if (Game.Player.guarded && !Game.Keys.D) {
-                        Game.Player.element.css('animation', '0.1s linear infinite animation-player-guard-up');
-                        if (Game.Player.element.css('background-image').includes('img/player/guard3.png?2')) {
-                            Game.Player.guarded = false;
-                            Game.Player.crouched = false;
-                            Helpers.stopAnimationOnLastFrame(Game.Player.element);
-                        }
-                    }
-                }
-            },
             powerUp: {
                 start() {
                     if (Game.Player.grounded && !Game.Player.crouched && !Game.Player.guarded) {
                         if (!Game.Player.powerUping && Game.Keys.C) {
-                            Game.Player.element.css('animation', '0.2s linear animation-player-powerup-down');
+                            Game.Player.element.css('animation', '0.5s linear animation-player-powerup-down');
 
                             if (Game.Player.element.css('background-image').includes('img/player/powerup3.png')) {
                                 Game.Player.powerUping = true;
@@ -165,29 +145,46 @@ const Game = {
             },
             jump: {
                 start() {
-                    if (!Game.Player.grounded && Game.Player.vectors.y > 0) {
+                    if (!Game.Player.grounded && !Game.Keys.D && Game.Player.vectors.y > 0) {
                         Game.Player.element.css('animation', '0.6s linear infinite animation-player-jump-up');
                     }
-                    else if (!Game.Player.grounded && Game.Player.vectors.y >= -7 && Game.Player.vectors.y <= 5) {
+                    else if (!Game.Player.grounded && !Game.Keys.D && Game.Player.vectors.y >= -7 && Game.Player.vectors.y <= 5) {
                         Game.Player.element.css('animation', '0.6s linear infinite animation-player-jump-active');
                     }
-                    else if (!Game.Player.grounded && Game.Player.vectors.y < 0) {
-                        
+                    else if (!Game.Player.grounded && !Game.Keys.D && Game.Player.vectors.y < 0) {
                         Game.Player.element.css('animation', '0.6s linear infinite animation-player-jump-down');
                     }
                 }
             },
-
+            guard: {
+                start() {
+                    if (!Game.Player.guarded && Game.Keys.D && !Game.Keys.C) {
+                        Game.Player.element.css('animation', '0.1s linear animation-player-guard-down');
+                        if (Game.Player.element.css('background-image').includes('img/player/guard2.png')) {
+                            Game.Player.guarded = true;
+                            Game.Player.crouched = false;
+                            Helpers.stopAnimationOnLastFrame(Game.Player.element);
+                        }
+                    }
+                    else if (Game.Player.guarded && !Game.Keys.D) {
+                        Game.Player.element.css('animation', '0.1s linear infinite animation-player-guard-up');
+                        if (Game.Player.element.css('background-image').includes('img/player/guard3.png?2')) {
+                            Game.Player.guarded = false;
+                            Game.Player.crouched = false;
+                            Helpers.stopAnimationOnLastFrame(Game.Player.element);
+                        }
+                    }
+                }
+            },
             animate() {
                 this.idle.start();
                 this.run.start();
                 this.crouch.start();
-                this.guard.start();
                 this.powerUp.start();
                 this.jump.start();
+                this.guard.start();
             },
         },
-         
         init() {
             Game.Keys.activeObject = 'player';
             this.element = $('#player');
@@ -200,19 +197,23 @@ const Game = {
             this.element.css('left', `${this.position.x}px`);
             this.element.css('bottom', `${this.position.y}px`);
 
-            if (!Game.Player.crouched && !Game.Keys.down && !Game.Player.powerUping && ((Game.Player.grounded && !Game.Player.guarded) || !Game.Player.grounded)) {
-                if (Game.Keys.activeObject == 'player' && Game.Keys.left && (this.vectors.x > -this.maxSpeed)) {
-                    Game.Player.element.css('transform', 'scaleX(-1)')
-                    this.vectors.x -= this.speed;
-                }
-                else if (Game.Keys.activeObject == 'player' && Game.Keys.right && (this.vectors.x < this.maxSpeed)) {
-                    Game.Player.element.css('transform', 'scaleX(1)')
-                    this.vectors.x += this.speed;
-                }
-                if (Game.Keys.activeObject == 'player' && Game.Keys.up && Game.Player.grounded) {
-                    Game.Player.grounded = false
-                    this.vectors.y += this.jumpPower;
-                }
+            if (!Game.Player.crouched && 
+                !Game.Keys.down && 
+                !Game.Player.powerUping &&
+                ((Game.Player.grounded && !Game.Player.guarded) || !Game.Player.grounded)) {
+
+                    if (Game.Keys.activeObject == 'player' && Game.Keys.left && (this.vectors.x > -this.maxSpeed)) {
+                        Game.Player.element.css('transform', 'scaleX(-1)')
+                        this.vectors.x -= this.speed;
+                    }
+                    else if (Game.Keys.activeObject == 'player' && Game.Keys.right && (this.vectors.x < this.maxSpeed)) {
+                        Game.Player.element.css('transform', 'scaleX(1)')
+                        this.vectors.x += this.speed;
+                    }
+                    if (Game.Keys.activeObject == 'player' && Game.Keys.up && Game.Player.grounded) {
+                        Game.Player.grounded = false
+                        this.vectors.y += this.jumpPower;
+                    }
             }
             /* uwzględnij tarcie zmniejszające wektor ruchu*/
             if (this.vectors.x > 0) {
@@ -244,7 +245,7 @@ const Game = {
         Gravity: {
             value: 0.5,
             calculate() {
-                if (Game.Player.loaded && (Game.Player.position.y > 0)) {
+                if (Game.Player.position.y > 0) {
                     Game.Player.vectors.y -= this.value; 
                 }
                 else {
