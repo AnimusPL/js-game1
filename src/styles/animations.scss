@@ -1,0 +1,84 @@
+
+
+
+@keyframes animation-player-idle {
+    0% { background-image: url('../../img/player/stand1.png'); } 
+    25% { background-image: url('../../img/player/stand2.png'); }
+    50% { background-image: url('../../img/player/stand3.png'); }
+    75% { background-image: url('../../img/player/stand4.png'); }
+    100% { background-image: url('../../img/player/stand1.png'); } 
+}
+
+@keyframes animation-player-crouch-down {
+    0% { background-image: url('../../img/player/crouch1.png'); } 
+    100% { background-image: url('../../img/player/crouch2.png'); }
+}
+@keyframes animation-player-crouch-up {
+    0% { background-image: url('../../img/player/crouch2.png'); } 
+    75% { background-image: url('../../img/player/crouch3.png?1'); } 
+    100% { background-image: url('../../img/player/crouch3.png?2'); }
+}
+
+@keyframes animation-player-guard-down {
+    0% { background-image: url('../../img/player/guard1.png'); } 
+    100% { background-image: url('../../img/player/guard2.png'); }
+}
+@keyframes animation-player-guard-up {
+    0% { background-image: url('../../img/player/guard2.png'); } 
+    75% { background-image: url('../../img/player/guard3.png?1'); } 
+    100% { background-image: url('../../img/player/guard3.png?2'); }
+}
+
+@keyframes animation-player-powerup-down {
+    0% { background-image: url('../../img/player/powerup0.png'); } 
+    25% { background-image: url('../../img/player/powerup1.png'); }
+    75% { background-image: url('../../img/player/powerup2.png'); }
+    100% { background-image: url('../../img/player/powerup3.png'); }
+}
+@keyframes animation-player-powerup-active {
+    0% { background-image: url('../../img/player/powerup4.png'); }
+    50% { background-image: url('../../img/player/powerup5.png'); }
+    100% { background-image: url('../../img/player/powerup4.png'); }
+}
+
+@keyframes animation-player-run {
+    0% { background-image: url('../../img/player/run1.png'); } 
+    12% { background-image: url('../../img/player/run2.png'); }
+    24% { background-image: url('../../img/player/run3.png'); }
+    48% { background-image: url('../../img/player/run4.png'); }
+    60% { background-image: url('../../img/player/run5.png'); } 
+    72% { background-image: url('../../img/player/run6.png'); }
+    84% { background-image: url('../../img/player/run7.png'); }
+    100% { background-image: url('../../img/player/run8.png'); }
+}
+
+@keyframes animation-player-jump-up {
+    0% { background-image: url('../../img/player/jump1.png'); } 
+    75% { background-image: url('../../img/player/jump2.png?1'); } 
+    100% { background-image: url('../../img/player/jump2.png?2'); }
+}
+
+@keyframes animation-player-jump-active {
+    0% { background-image: url('../../img/player/jump3.png'); } 
+    100% { background-image: url('../../img/player/jump3.png'); }
+}
+
+@keyframes animation-player-jump-down {
+    0% { background-image: url('../../img/player/jump4.png'); } 
+    100% { background-image: url('../../img/player/jump4.png'); }
+}
+
+
+
+
+/* fx */
+@keyframes animation-aura-white {
+    0% { background-image: url('../../img/fx/aura1.png'); } 
+    25% { background-image: url('../../img/fx/aura2.png'); }
+    50% { background-image: url('../../img/fx/aura3.png'); }
+    75% { background-image: url('../../img/fx/aura4.png'); }
+    100% { background-image: url('../../img/fx/aura1.png'); } 
+  }
+.animation-aura-white {
+    animation: animation-aura-white 0.5s infinite; /* Animacja zmiany obrazka */
+}

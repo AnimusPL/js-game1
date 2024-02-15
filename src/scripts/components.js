@@ -52,7 +52,6 @@ const Game = {
         grounded: true,
         crouched: false,
         guarded: false,
-        guardedReleased: false,
         powerUping: false,
         position: {
             x: 20,
@@ -74,189 +73,107 @@ const Game = {
         },
         animations: {
             idle: {
-
                 counter: 0,
                 animationSpeed: 0.1,
                 start() {
-                    if (Game.Player.grounded && !Game.Player.crouched && !Game.Keys.right && !Game.Keys.left) {
-                        Game.Player.element.css('animation', '0.5s linear infinite animation-player-idle')
+                    if (Game.Player.grounded && !Game.Player.crouched && !Game.Player.guarded && !Game.Keys.right && !Game.Keys.left) {
+                        Game.Player.element.css('animation', '0.8s linear infinite animation-player-idle')
                     }
                 }
             },
             crouch: {
                 start() {
-                    if (Game.Player.grounded) {
+                    if (Game.Player.grounded && !Game.Player.guarded && !Game.Keys.D) {
                         if (!Game.Player.crouched && Game.Keys.down) {
                             Game.Player.element.css('animation', '0.2s linear animation-player-crouch-down');
                             if (Game.Player.element.css('background-image').includes('img/player/crouch2.png')) {
                                 Helpers.stopAnimationOnLastFrame(Game.Player.element);
                                 Game.Player.crouched = true;
+                                Game.Player.guarded = false;
                             }
                         }
-                        else if (Game.Player.crouched && !Game.Keys.down) {
+                        else if (Game.Player.crouched && !Game.Player.guarded && !Game.Keys.down && !Game.Keys.D) {
                             Game.Player.element.css('animation', '0.2s linear animation-player-crouch-up');
                             if (Game.Player.element.css('background-image').includes('img/player/crouch3.png?2')) {
                                 Game.Player.crouched = false;
+                                Game.Player.guarded = false;
                             }
                         }
                     }
                 }
             },
             guard: {
-                sprites: [
-                    'img/player/guard1.png', 
-                    'img/player/guard2.png', 
-                    'img/player/guard3.png', 
-                ],
-                counter: 0,
-                animationSpeed: 0.3,
                 start() {
-                    if (Game.Player.grounded) {
-                        if (!Game.Player.guarded && Game.Keys.D) {
-                            Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
-                            if (this.counter < 1) {
-                                this.counter += this.animationSpeed;
-                            }
-                            else if (this.counter >= 1) {
-                                Game.Player.guarded = true;
-                            }
+                    if (!Game.Player.guarded && Game.Keys.D) {
+                        Game.Player.element.css('animation', '0.1s linear animation-player-guard-down');
+                        if (Game.Player.element.css('background-image').includes('img/player/guard2.png')) {
+                            Game.Player.guarded = true;
+                            Game.Player.crouched = false;
+                            Helpers.stopAnimationOnLastFrame(Game.Player.element);
                         }
-                        if (Game.Player.guarded && Game.Keys.D) {
-                            this.counter = 1;
-                            Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
-                            Game.Player.guardedReleased = true;
-                        }
-                        
-                        else if (Game.Player.guardedReleased) {
-                            if (this.counter <= 3) {
-                                Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
-                                this.counter += this.animationSpeed;
-                            }
-                            else {
-                                this.counter = 0;
-                                Game.Player.guarded = false;
-                                Game.Player.guardedReleased = false;
-                            }
+                    }
+                    else if (Game.Player.guarded && !Game.Keys.D) {
+                        Game.Player.element.css('animation', '0.1s linear infinite animation-player-guard-up');
+                        if (Game.Player.element.css('background-image').includes('img/player/guard3.png?2')) {
+                            Game.Player.guarded = false;
+                            Game.Player.crouched = false;
+                            Helpers.stopAnimationOnLastFrame(Game.Player.element);
                         }
                     }
                 }
             },
             powerUp: {
-                sprites: [
-                    'img/player/powerup0.png', 
-                    'img/player/powerup1.png', 
-                    'img/player/powerup2.png',
-                    'img/player/powerup3.png',
-                    'img/player/powerup4.png',
-                    'img/player/powerup5.png',
-                    'img/player/powerup6.png'
-                ],
-                counter: 0,
-                animationSpeed: 0.15,
                 start() {
                     if (Game.Player.grounded && !Game.Player.crouched && !Game.Player.guarded) {
                         if (!Game.Player.powerUping && Game.Keys.C) {
-                            Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
-                            if (this.counter < 3) {
-                                this.counter += this.animationSpeed;
-                            }
-                            else if (this.counter >= 3) {
+                            Game.Player.element.css('animation', '0.2s linear animation-player-powerup-down');
+
+                            if (Game.Player.element.css('background-image').includes('img/player/powerup3.png')) {
                                 Game.Player.powerUping = true;
                             }
                         }
-                        
-                        if (Game.Player.powerUping && Game.Keys.C) {
-                            Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
-                            console.log(this.counter);
-                            if (this.counter <= 7) {
-                                this.counter += this.animationSpeed;
-                            }
+                        else if (Game.Player.powerUping && Game.Keys.C) {
+                            Game.Player.element.css('animation', '0.4s linear infinite animation-player-powerup-active');
 
-                            if (this.counter >= 7) {
-                                this.counter = 4
-                            }
-                        }
-                        else if (Game.Player.powerUping && !Game.Keys.C) {
-                            this.counter = 0;
-                            Game.Player.powerUping = false;
-                        }
-                    }
+                            Game.Player.fx.whiteAura.loop();
 
-                    if (Game.Player.powerUping) {
-                        Game.Player.fx.whiteAura.loop();
-                        if (Game.Player.power < 100) {
-                            Game.Player.aura.css('filter', `drop-shadow(rgb(0, 238, 255) 0px 0px 5px) blur(${50 - (Game.Player.power)}px)`)
-                            Game.Player.power += 0.5;
+                            if (Game.Player.power < 100) {
+                                Game.Player.aura.css('filter', `drop-shadow(rgb(0, 238, 255) 0px 0px 5px) blur(${50 - (Game.Player.power)}px)`)
+                                Game.Player.power += 0.5;
+                            }
+                            else {
+                                Game.Player.aura.css('filter', 'drop-shadow(rgb(0, 238, 255) 0px 0px 5px)')
+                                Game.Player.element.css('filter', 'drop-shadow(rgb(0, 238, 255) 0px 0px 5px)')
+                            }
                         }
                         else {
-                            Game.Player.aura.css('filter', 'drop-shadow(rgb(0, 238, 255) 0px 0px 5px)')
-                            Game.Player.element.css('filter', 'drop-shadow(rgb(0, 238, 255) 0px 0px 5px)')
+                            Game.Player.powerUping = false;
+                            Game.Player.fx.whiteAura.stop();
                         }
-                    }
-                    else {
-                        Game.Player.fx.whiteAura.stop();
                     }
                 }
             },
             run: {
-                sprites: [
-                    'img/player/run1.png', 
-                    'img/player/run2.png', 
-                    'img/player/run3.png', 
-                    'img/player/run4.png',
-                    'img/player/run5.png', 
-                    'img/player/run6.png', 
-                    'img/player/run7.png', 
-                    'img/player/run8.png'
-                ],
-                counter: 0,
-                animationSpeed: 0.25,
                 start() {
-                    if (Game.Player.grounded && !Game.Player.crouched && Game.Keys.right && !Game.Keys.C) {
-                        //Game.Player.element.css('transform', 'scaleX(1)')
-                        Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
-                        this.counter += this.animationSpeed;
-                        // Sprawdzamy, czy przekroczyliśmy ilość klatek animacji
-                        if (this.counter >= this.sprites.length) this.counter = 0;
+                    if (Game.Player.grounded && !Game.Player.crouched && !Game.Player.guarded && Game.Keys.right && !Game.Keys.C) {
+                        Game.Player.element.css('animation', '0.6s linear infinite animation-player-run');
                     }
-                    else if (Game.Player.grounded && !Game.Player.crouched && Game.Keys.left && !Game.Keys.C) {
-                        //Game.Player.element.css('transform', 'scaleX(-1)')
-                        Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
-                        this.counter += this.animationSpeed;
-                        // Sprawdzamy, czy przekroczyliśmy ilość klatek animacji
-                        if (this.counter >= this.sprites.length) this.counter = 0;
+                    else if (Game.Player.grounded && !Game.Player.crouched && !Game.Player.guarded && Game.Keys.left && !Game.Keys.C) {
+                        Game.Player.element.css('animation', '0.6s linear infinite animation-player-run');
                     }
                 }
             },
             jump: {
-                sprites: [
-                    'img/player/jump1.png', 
-                    'img/player/jump2.png', 
-                    'img/player/jump3.png', 
-                    'img/player/jump4.png',
-                ],
-                counter: 0,
-                animationSpeed: 0.2,
                 start() {
                     if (!Game.Player.grounded && Game.Player.vectors.y > 0) {
-                        Game.Player.powerUping = false;
-                        Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(this.counter)]})`);
-
-                        if (this.counter < 2) {
-                            this.counter += this.animationSpeed;
-                        }
-                        if (this.counter >= 2) {
-                            this.counter = 0;
-                        }
+                        Game.Player.element.css('animation', '0.6s linear infinite animation-player-jump-up');
                     }
                     else if (!Game.Player.grounded && Game.Player.vectors.y >= -7 && Game.Player.vectors.y <= 5) {
-                        Game.Player.powerUping = false;
-                        Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(2)]})`);
-
+                        Game.Player.element.css('animation', '0.6s linear infinite animation-player-jump-active');
                     }
                     else if (!Game.Player.grounded && Game.Player.vectors.y < 0) {
-                        Game.Player.powerUping = false;
-                        Game.Player.element.css('background-image', `url(${this.sprites[Math.floor(3)]})`);
+                        
+                        Game.Player.element.css('animation', '0.6s linear infinite animation-player-jump-down');
                     }
                 }
             },
@@ -270,8 +187,7 @@ const Game = {
                 this.jump.start();
             },
         },
-        
-        
+         
         init() {
             Game.Keys.activeObject = 'player';
             this.element = $('#player');
@@ -284,7 +200,7 @@ const Game = {
             this.element.css('left', `${this.position.x}px`);
             this.element.css('bottom', `${this.position.y}px`);
 
-            if (!Game.Player.crouched && !Game.Player.guarded && !Game.Keys.down && !Game.Player.powerUping) {
+            if (!Game.Player.crouched && !Game.Keys.down && !Game.Player.powerUping && ((Game.Player.grounded && !Game.Player.guarded) || !Game.Player.grounded)) {
                 if (Game.Keys.activeObject == 'player' && Game.Keys.left && (this.vectors.x > -this.maxSpeed)) {
                     Game.Player.element.css('transform', 'scaleX(-1)')
                     this.vectors.x -= this.speed;
