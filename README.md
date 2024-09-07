@@ -4,6 +4,6 @@ The repository contains a browser-based game built with HTML, CSS, and JavaScrip
 
 MOVEMENT:
 
-ARROWS - MOVE
-D - GUARD
+ARROWS - MOVE |
+D - GUARD |
 C - CHARGE
